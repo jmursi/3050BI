@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Requirements Gathering & KPI Development for BI Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+        
+        .slides-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .slide-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        
+        .slide-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.5rem;
+            color: #3498db;
+            font-weight: 300;
+        }
+        
+        .slide-content {
+            font-size: 1.2rem;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .slide-content ul, .slide-content ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .slide-content li {
+            margin-bottom: 10px;
+        }
+        
+        .kpi-example {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .section-title {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            text-align: center;
+        }
+        
+        .section-title .slide-title {
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .title-slide {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .title-slide .slide-title {
+            color: white;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .title-slide .slide-subtitle {
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: #ecf0f1;
+            z-index: 100;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(52, 152, 219, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 100;
+        }
+        
+        .activity-box {
+            background-color: #e8f4fc;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .activity-title {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .case-study {
+            background-color: #fff8e1;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .case-study-title {
+            color: #ff9800;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .bad-kpi {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .good-kpi {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .kpi-category {
+            background-color: #f3e5f5;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .kpi-category-title {
+            color: #7b1fa2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+            }
+            
+            .slide-title {
+                font-size: 1.8rem;
+            }
+            
+            .slide-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .slide-content {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    
+    <div class="slides-container" id="slides-container">
+        <!-- Slide 1: Title Slide -->
+        <div class="slide title-slide active">
+            <div class="slide-header">
+                <h1 class="slide-title">Business Requirements Gathering & KPI Development</h1>
+                <p class="slide-subtitle">Building BI Solutions That Deliver Business Value</p>
+                <p><em>For SME BI Projects</em></p>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Section Title -->
+        <div class="slide section-title">
+            <div class="slide-header">
+                <h1 class="slide-title">PART 1: Understanding Business Requirements</h1>
+                <p class="slide-subtitle">Duration: 30-35 minutes</p>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Today's Learning Objectives -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Today's Learning Objectives</h1>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Understand why requirements gathering is critical for BI success</li>
+                    <li>Learn stakeholder analysis techniques for SMEs</li>
+                    <li>Master requirements gathering methods (interviews, observation, documentation)</li>
+                    <li>Convert business questions into measurable KPIs</li>
+                    <li>Document and plan effective dashboards</li>
+                    <li>Apply concepts directly to your course project</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Why Requirements Matter in BI Projects -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Why Requirements Matter in BI Projects</h1>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Building the wrong dashboard wastes time, money, and trust</li>
+                    <li>SMEs have limited resources - must get it right the first time</li>
+                    <li>Poor requirements = dashboards that nobody uses</li>
+                    <li>Good requirements = actionable insights that drive decisions</li>
+                    <li>Understanding needs upfront prevents costly rework</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Case Study -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Case Study - The Cost of Poor Requirements</h1>
+            </div>
+            <div class="slide-content">
+                <div class="case-study">
+                    <div class="case-study-title">Scenario: Local Retail Chain Example</div>
+                    <p><strong>Problem:</strong> Built a complex inventory dashboard with 50+ metrics</p>
+                    <p><strong>Issue:</strong> Store managers only needed 3 key numbers:</p>
+                    <ul>
+                        <li>Stock levels</li>
+                        <li>Reorder points</li>
+                        <li>Turnover rate</li>
+                    </ul>
+                    <p><strong>Result:</strong> Dashboard abandoned after 2 weeks. KES 300,000 wasted.</p>
+                    <p><strong>Lesson:</strong> More data ≠ Better decisions. Know what users actually need.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: The BI Requirements Challenge -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">The BI Requirements Challenge</h1>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Stakeholders often don't know what they need</li>
+                    <li>They ask for "everything" or "just give me a dashboard"</li>
+                    <li>Technical teams build what's asked, not what's needed</li>
+                    <li>Result: Beautiful dashboards with no business impact</li>
+                    <li><strong>YOUR JOB:</strong> Bridge the gap between business needs and technical solutions</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Stakeholder Analysis for SMEs -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Stakeholder Analysis for SMEs</h1>
+                <p class="slide-subtitle">Who needs what information?</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>Business Owner/CEO:</strong> Strategic overview, profitability, growth trends</li>
+                    <li><strong>Department Managers:</strong> Operational metrics, team performance, departmental KPIs</li>
+                    <li><strong>End Users:</strong> Daily operational data, task-specific metrics, real-time alerts</li>
+                    <li>Each level needs different detail and frequency</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Information Needs by Role -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Information Needs by Role</h1>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-category">
+                    <div class="kpi-category-title">Executive Level:</div>
+                    <ul>
+                        <li>High-level KPIs</li>
+                        <li>Trends over time</li>
+                        <li>Monthly/quarterly views</li>
+                        <li>Strategic decisions</li>
+                    </ul>
+                </div>
+                
+                <div class="kpi-category">
+                    <div class="kpi-category-title">Operational Level:</div>
+                    <ul>
+                        <li>Detailed transactions</li>
+                        <li>Real-time/daily data</li>
+                        <li>Actionable alerts</li>
+                        <li>Tactical decisions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Discussion Question -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Discussion Question</h1>
+            </div>
+            <div class="slide-content">
+                <p><strong>For YOUR SME project: Who would you interview to gather requirements?</strong></p>
+                <p>Think about:</p>
+                <ul>
+                    <li>List 3-5 key stakeholders</li>
+                    <li>What would each person need to know?</li>
+                    <li>How often would they use the dashboard?</li>
+                    <li>What decisions do they make?</li>
+                </ul>
+                <div class="activity-box">
+                    <div class="activity-title">Take 3 minutes to think individually, then we'll discuss</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Requirements Gathering Techniques -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Requirements Gathering Techniques</h1>
+            </div>
+            <div class="slide-content">
+                <p>Four main approaches:</p>
+                <ol>
+                    <li><strong>Interviews:</strong> One-on-one conversations with stakeholders</li>
+                    <li><strong>Observation:</strong> Watch how they currently work with data</li>
+                    <li><strong>Document Analysis:</strong> Review existing reports and spreadsheets</li>
+                    <li><strong>Workshops:</strong> Collaborative sessions with multiple stakeholders</li>
+                </ol>
+                <p>Each technique reveals different insights!</p>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Effective Interview Questions -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Effective Interview Questions</h1>
+                <p class="slide-subtitle">What to ask SME stakeholders:</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>"What decisions do you make daily/weekly/monthly?"</li>
+                    <li>"What information do you wish you had right now?"</li>
+                    <li>"How do you currently track [X metric]?"</li>
+                    <li>"What keeps you up at night about the business?"</li>
+                    <li>"If you could see one number every morning, what would it be?"</li>
+                    <li>"What reports do you look at most often?"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 12: The Power of "Why?" -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">The Power of "Why?"</h1>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-example">
+                    <p><strong>Example conversation:</strong></p>
+                    <p><strong>Stakeholder:</strong> "I need to see all customer transactions"</p>
+                    <p><strong>You:</strong> "Why is that important?"</p>
+                    <p><strong>Stakeholder:</strong> "To identify our best customers"</p>
+                    <p><strong>You:</strong> "Why do you need to identify best customers?"</p>
+                    <p><strong>Stakeholder:</strong> "To focus retention efforts on high-value customers"</p>
+                    <p><strong>REAL NEED:</strong> Customer segmentation by value, not transaction lists!</p>
+                </div>
+                <p><strong>Always dig deeper with "why" questions.</strong></p>
+            </div>
+        </div>
+        
+        <!-- Slide 13: Breakout Activity -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Breakout Activity (10 minutes)</h1>
+                <p class="slide-subtitle">Task: Draft 5 Interview Questions</p>
+            </div>
+            <div class="slide-content">
+                <p><strong>Instructions:</strong></p>
+                <ul>
+                    <li>In breakout rooms: Create 5 questions for YOUR SME stakeholders</li>
+                    <li>Focus on uncovering real business needs (not just data requests)</li>
+                    <li>Use the "why" technique to dig deeper</li>
+                    <li>Prepare to share your best question with the class</li>
+                </ul>
+                <div class="activity-box">
+                    <div class="activity-title">I'll visit breakout rooms to help guide discussions</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 14: Observation Technique -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Observation Technique</h1>
+                <p class="slide-subtitle">Learning by watching:</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Watch stakeholders work with current reports</li>
+                    <li>What do they look at first?</li>
+                    <li>What do they ignore or skip?</li>
+                    <li>What calculations do they do manually?</li>
+                    <li>What frustrates them about current processes?</li>
+                    <li>Where do they spend most time?</li>
+                </ul>
+                <p><strong>Remember:</strong> Actions speak louder than words!</p>
+            </div>
+        </div>
+        
+        <!-- Slide 15: Document Analysis -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Document Analysis</h1>
+                <p class="slide-subtitle">Analyzing existing reports and spreadsheets:</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Collect existing reports and Excel files</li>
+                    <li>What metrics are already being tracked?</li>
+                    <li>How is data currently formatted?</li>
+                    <li>What formulas are being used?</li>
+                    <li>What gets printed or emailed regularly?</li>
+                </ul>
+                <p>These documents show what users actually value - build on what works, improve what doesn't.</p>
+            </div>
+        </div>
+        
+        <!-- Slide 16: Section Title -->
+        <div class="slide section-title">
+            <div class="slide-header">
+                <h1 class="slide-title">PART 2: From Business Questions to KPIs</h1>
+                <p class="slide-subtitle">Duration: 35-40 minutes</p>
+            </div>
+        </div>
+        
+        <!-- Slide 17: Start with Business Questions -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Start with Business Questions</h1>
+                <p class="slide-subtitle">What decisions need to be made?</p>
+            </div>
+            <div class="slide-content">
+                <p>Common SME business questions:</p>
+                <ul>
+                    <li>"Which products should we stock more of?"</li>
+                    <li>"Which customers should we focus retention efforts on?"</li>
+                    <li>"What times/days should we staff more heavily?"</li>
+                    <li>"Are our promotions working?"</li>
+                    <li>"Is the business growing or shrinking?"</li>
+                    <li>"Where are we losing money?"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 18: The KPI Development Framework -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">The KPI Development Framework</h1>
+            </div>
+            <div class="slide-content">
+                <p><strong>Four-step process:</strong></p>
+                <ol>
+                    <li><strong>Business Question</strong> → What needs to be decided?</li>
+                    <li><strong>Metric</strong> → What can be measured?</li>
+                    <li><strong>KPI</strong> → What indicates success/failure?</li>
+                    <li><strong>Visualization</strong> → How should it be displayed?</li>
+                </ol>
+                <p><strong>Always start with the business question, never with available data!</strong></p>
+            </div>
+        </div>
+        
+        <!-- Slide 19: Example - Growth Question -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Example - Growth Question</h1>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-example">
+                    <p><strong>Business Question:</strong> Is the business growing?</p>
+                    <p><strong>Metric:</strong> Monthly Revenue</p>
+                    <p><strong>KPI:</strong> Month-over-Month Revenue Growth %</p>
+                    <p><strong>Formula:</strong> ((Current Month - Previous Month) / Previous Month) × 100</p>
+                    <p><strong>Visualization:</strong> Line chart with trend line</p>
+                    <p><strong>Target:</strong> >10% monthly growth</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 20: Example - Product Performance -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Example - Product Performance</h1>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-example">
+                    <p><strong>Business Question:</strong> Which products should we stock more of?</p>
+                    <p><strong>Metric:</strong> Product Sales Volume & Revenue</p>
+                    <p><strong>KPI:</strong> Product Revenue Contribution %</p>
+                    <p><strong>Formula:</strong> (Product Revenue / Total Revenue) × 100</p>
+                    <p><strong>Visualization:</strong> Bar chart ranked by contribution</p>
+                    <p><strong>Target:</strong> Top 20% products = 80% revenue (Pareto Principle)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 21: Example - Customer Retention -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Example - Customer Retention</h1>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-example">
+                    <p><strong>Business Question:</strong> Are we keeping our customers?</p>
+                    <p><strong>Metric:</strong> Repeat Purchase Rate</p>
+                    <p><strong>KPI:</strong> Customer Retention Rate</p>
+                    <p><strong>Formula:</strong> (Customers who returned / Total customers) × 100</p>
+                    <p><strong>Visualization:</strong> Trend line over time with monthly points</p>
+                    <p><strong>Target:</strong> >60% retention rate</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 22: SMART KPI Criteria -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">SMART KPI Criteria</h1>
+            </div>
+            <div class="slide-content">
+                <p>Every KPI should be:</p>
+                <ul>
+                    <li><strong>Specific:</strong> Clearly defined, no ambiguity</li>
+                    <li><strong>Measurable:</strong> Can be quantified with available data</li>
+                    <li><strong>Achievable:</strong> Realistic targets based on business context</li>
+                    <li><strong>Relevant:</strong> Tied directly to business goals</li>
+                    <li><strong>Time-bound:</strong> Specified time period (daily, weekly, monthly, yearly)</li>
+                </ul>
+                <p><strong>If it's not SMART, it's not a good KPI!</strong></p>
+            </div>
+        </div>
+        
+        <!-- Slide 23: SMART vs. Vague KPIs -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">SMART vs. Vague KPIs</h1>
+            </div>
+            <div class="slide-content">
+                <div class="bad-kpi">
+                    <p><strong>❌ Vague KPI:</strong> "Sales Performance"</p>
+                    <ul>
+                        <li>What aspect of sales?</li>
+                        <li>Compared to what?</li>
+                        <li>What timeframe?</li>
+                        <li>How is it measured?</li>
+                    </ul>
+                </div>
+                
+                <div class="good-kpi">
+                    <p><strong>✓ SMART KPI:</strong> "Month-over-Month Sales Growth %"</p>
+                    <ul>
+                        <li>Specific metric (growth rate)</li>
+                        <li>Clear comparison (current vs previous month)</li>
+                        <li>Defined period (monthly)</li>
+                        <li>Measurable formula</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 24: KPI Categories for SMEs -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">KPI Categories for SMEs</h1>
+                <p class="slide-subtitle">1. Sales & Revenue KPIs</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Total Sales/Revenue (by day/week/month/year)</li>
+                    <li>Sales Growth Rate (MoM, YoY)</li>
+                    <li>Average Transaction Value</li>
+                    <li>Sales by Product/Category</li>
+                    <li>Sales by Channel/Location</li>
+                    <li>Revenue per Employee</li>
+                    <li>Sales per Square Meter (retail)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 25: KPI Categories for SMEs -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">KPI Categories for SMEs</h1>
+                <p class="slide-subtitle">2. Customer KPIs</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Customer Acquisition Rate (new customers)</li>
+                    <li>Customer Retention Rate (returning customers)</li>
+                    <li>Customer Lifetime Value (CLV)</li>
+                    <li>Repeat Purchase Rate</li>
+                    <li>Customer Satisfaction Score</li>
+                    <li>Average Customer Value</li>
+                    <li>Customer Churn Rate</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 26: KPI Categories for SMEs -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">KPI Categories for SMEs</h1>
+                <p class="slide-subtitle">3. Operational KPIs</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Inventory Turnover Rate</li>
+                    <li>Stock-out Rate (out of stock incidents)</li>
+                    <li>Order Fulfillment Time</li>
+                    <li>Employee Productivity (sales per employee)</li>
+                    <li>Service Delivery Time</li>
+                    <li>Operational Efficiency Ratio</li>
+                    <li>Waste/Shrinkage Rate</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 27: KPI Categories for SMEs -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">KPI Categories for SMEs</h1>
+                <p class="slide-subtitle">4. Financial KPIs</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Gross Profit Margin</li>
+                    <li>Net Profit Margin</li>
+                    <li>Operating Expense Ratio</li>
+                    <li>Cash Flow (positive/negative)</li>
+                    <li>Break-even Point</li>
+                    <li>Return on Investment (ROI)</li>
+                    <li>Days Sales Outstanding (DSO)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 28: Class Discussion -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Class Discussion</h1>
+            </div>
+            <div class="slide-content">
+                <p><strong>Based on your SME's industry (sales vs retail), which 5-7 KPIs would be most critical?</strong></p>
+                <p>Consider:</p>
+                <ul>
+                    <li>Your stakeholders' key decisions</li>
+                    <li>Data availability in your dataset</li>
+                    <li>Actionable metrics (can the business respond to them?)</li>
+                    <li><strong>WHY is each KPI critical to the business?</strong></li>
+                </ul>
+                <div class="activity-box">
+                    <div class="activity-title">Let's hear from 3-4 students about their selections</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 29: Section Title -->
+        <div class="slide section-title">
+            <div class="slide-header">
+                <h1 class="slide-title">PART 3: KPI Documentation & Success Metrics</h1>
+                <p class="slide-subtitle">Duration: 20-25 minutes</p>
+            </div>
+        </div>
+        
+        <!-- Slide 30: KPI Documentation Template -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">KPI Documentation Template</h1>
+                <p class="slide-subtitle">Example: Month-over-Month Sales Growth</p>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-example">
+                    <ul>
+                        <li><strong>KPI Name:</strong> Month-over-Month Sales Growth</li>
+                        <li><strong>Definition:</strong> Percentage change in total sales from previous month</li>
+                        <li><strong>Formula:</strong> ((Current Month Sales - Previous Month Sales) / Previous Month Sales) × 100</li>
+                        <li><strong>Data Source:</strong> Sales transaction table</li>
+                        <li><strong>Owner:</strong> Sales Manager</li>
+                        <li><strong>Target:</strong> >10% growth</li>
+                        <li><strong>Update Frequency:</strong> Updated monthly, reviewed in monthly meetings</li>
+                        <li><strong>Why It Matters:</strong> Indicates business trajectory and helps identify seasonal patterns</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 31: Why Document KPIs? -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Why Document KPIs?</h1>
+                <p class="slide-subtitle">Six critical reasons:</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li>Ensures everyone understands the metric the same way</li>
+                    <li>Makes calculations transparent and auditable</li>
+                    <li>Helps new users understand the dashboard</li>
+                    <li>Prevents "metric confusion" across departments</li>
+                    <li>Essential for your project documentation!</li>
+                    <li>Professional standard in BI projects</li>
+                </ul>
+                <p><em>Good documentation = Better adoption</em></p>
+            </div>
+        </div>
+        
+        <!-- Slide 32: Dashboard Planning Principles -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Dashboard Planning Principles</h1>
+                <p class="slide-subtitle">Key design principles:</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>The "One Big Number" principle:</strong> What's the MOST important metric?</li>
+                    <li><strong>KPI Hierarchy:</strong> Primary metrics → Supporting metrics</li>
+                    <li>Supporting metrics explain WHY the primary changed</li>
+                    <li><strong>How many KPIs?</strong> Follow the 7±2 rule (5-9 maximum per page)</li>
+                    <li>Too many metrics = decision paralysis</li>
+                    <li>Group related KPIs together</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 33: Dashboard KPI Hierarchy Example -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Dashboard KPI Hierarchy Example</h1>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-example">
+                    <p><strong>PRIMARY KPI (Top of dashboard):</strong></p>
+                    <ul>
+                        <li>Monthly Revenue: KES 2.5M</li>
+                    </ul>
+                </div>
+                
+                <div class="kpi-example">
+                    <p><strong>SECONDARY KPIs (Support the primary):</strong></p>
+                    <ul>
+                        <li>MoM Growth: +15%</li>
+                        <li>Avg Transaction Value: KES 850</li>
+                        <li>Total Transactions: 2,941</li>
+                    </ul>
+                </div>
+                
+                <div class="kpi-example">
+                    <p><strong>TERTIARY KPIs (Explain the details):</strong></p>
+                    <ul>
+                        <li>Top Product Category: Laptops (30%)</li>
+                        <li>Top Location: Westlands Branch</li>
+                        <li>Peak Sales Day: Saturday</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 34: Aligning KPIs with BI Maturity -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Aligning KPIs with BI Maturity</h1>
+                <p class="slide-subtitle">Match your KPIs to organizational maturity:</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>Level 1-2 (Descriptive):</strong> "What happened?"
+                        <ul>
+                            <li>Basic metrics: totals, counts, averages</li>
+                        </ul>
+                    </li>
+                    <li><strong>Level 3-4 (Diagnostic):</strong> "Why did it happen?"
+                        <ul>
+                            <li>Comparative analysis, trends, correlations</li>
+                        </ul>
+                    </li>
+                    <li><strong>Level 5 (Predictive):</strong> "What will happen?"
+                        <ul>
+                            <li>Forecasting, predictive analytics</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p><strong>For your project:</strong> Likely Level 2-3 (descriptive to diagnostic)</p>
+            </div>
+        </div>
+        
+        <!-- Slide 35: Maturity Level Examples -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Maturity Level Examples</h1>
+            </div>
+            <div class="slide-content">
+                <div class="kpi-category">
+                    <div class="kpi-category-title">Descriptive (Level 1-2):</div>
+                    <ul>
+                        <li>Total sales this month: KES 500,000</li>
+                        <li>Number of transactions: 450</li>
+                        <li>Top 10 products by revenue</li>
+                        <li>Total customer count: 1,200</li>
+                    </ul>
+                </div>
+                
+                <div class="kpi-category">
+                    <div class="kpi-category-title">Diagnostic (Level 3-4):</div>
+                    <ul>
+                        <li>Sales vs. last month: +15%</li>
+                        <li>Product performance trend over 6 months</li>
+                        <li>Customer retention rate: 68%</li>
+                        <li>Seasonality patterns identified</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 36: Section Title -->
+        <div class="slide section-title">
+            <div class="slide-header">
+                <h1 class="slide-title">PART 4: Practical Application to Your Project</h1>
+                <p class="slide-subtitle">Duration: 15-20 minutes</p>
+            </div>
+        </div>
+        
+        <!-- Slide 37: Connecting to Your Assignment -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Connecting to Your Assignment</h1>
+                <p class="slide-subtitle">Today's content feeds directly into your report:</p>
+            </div>
+            <div class="slide-content">
+                <ul>
+                    <li><strong>Section 5: Business Understanding</strong>
+                        <ul>
+                            <li>SME problems and needs</li>
+                            <li>Stakeholder analysis</li>
+                        </ul>
+                    </li>
+                    <li><strong>Section 7: Key Trends, Patterns, and KPIs</strong>
+                        <ul>
+                            <li>What you'll measure and why</li>
+                        </ul>
+                    </li>
+                    <li><strong>Section 8: Dashboard Features</strong>
+                        <ul>
+                            <li>What users will see and interact with</li>
+                        </ul>
+                    </li>
+                    <li><strong>Section 9: Recommendations</strong>
+                        <ul>
+                            <li>Based on KPI insights</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Slide 38: Sample SME Case Study -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Sample SME Case Study</h1>
+                <p class="slide-subtitle">IwazoLab Solutions - Software Consulting Firm, Nairobi</p>
+            </div>
+            <div class="slide-content">
+                <div class="case-study">
+                    <p><strong>Company Profile:</strong></p>
+                    <ul>
+                        <li>Annual Revenue: KES 5M</li>
+                        <li>15 Employees</li>
+                        <li>3 Service Lines: Web Development, Mobile Apps, IT Consulting</li>
+                    </ul>
+                    
+                    <p><strong>Challenge:</strong> Inconsistent revenue, unclear which services are most profitable</p>
+                    
+                    <p><strong>Current State:</strong> Using Excel spreadsheets, no visibility into project profitability or resource utilization</p>
+                    
+                    <p><strong>Need:</strong> BI dashboard to track revenue by service line, client profitability, employee utilization</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 39: Breakout Activity -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Breakout Activity (10 minutes)</h1>
+                <p class="slide-subtitle">Case Study: IwazoLab Solutions</p>
+            </div>
+            <div class="slide-content">
+                <p><strong>Task:</strong> In your breakout rooms, identify 5-7 KPIs for IwazoLab</p>
+                
+                <p><strong>For each KPI, answer:</strong></p>
+                <ul>
+                    <li>What business question does it address?</li>
+                    <li>How would it help with their profitability challenge?</li>
+                    <li>What data would be needed to calculate it?</li>
+                </ul>
+                
+                <p><strong>Consider:</strong></p>
+                <ul>
+                    <li>Their 3 service lines</li>
+                    <li>15 employees (resource utilization)</li>
+                    <li>Project profitability</li>
+                    <li>Revenue consistency</li>
+                </ul>
+                
+                <div class="activity-box">
+                    <div class="activity-title">Prepare to present your top 3 KPIs!</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 40: Homework Assignment -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Homework Assignment</h1>
+                <p class="slide-subtitle">Due before next class session:</p>
+            </div>
+            <div class="slide-content">
+                <p>Submit a <strong>1-2 page document</strong> containing:</p>
+                
+                <p><strong>1. Section 5 Draft: SME Description & Business Understanding</strong></p>
+                <ul>
+                    <li>Company overview</li>
+                    <li>Business problems/challenges</li>
+                    <li>Stakeholder analysis</li>
+                </ul>
+                
+                <p><strong>2. KPI List: 7-10 Proposed KPIs</strong></p>
+                <p>For EACH KPI include:</p>
+                <ul>
+                    <li>KPI name</li>
+                    <li>Why it matters to the business</li>
+                    <li>Business question it answers</li>
+                    <li>Data needed to calculate it</li>
+                    <li>Target/benchmark (if possible)</li>
+                </ul>
+                
+                <p>Use the documentation template from today's class!</p>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="controls">
+        <button class="btn" id="prev-btn">Previous</button>
+        <button class="btn" id="next-btn">Next</button>
+    </div>
+    
+    <div class="slide-number" id="slide-number">1 / 40</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const slideNumber = document.getElementById('slide-number');
+            const progress = document.getElementById('progress');
+            
+            let currentSlide = 0;
+            
+            function showSlide(index) {
+                // Hide all slides
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Show the current slide
+                slides[index].classList.add('active');
+                
+                // Update slide number
+                slideNumber.textContent = `${index + 1} / ${slides.length}`;
+                
+                // Update progress bar
+                progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+            }
+            
+            function nextSlide() {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            }
+            
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            }
+            
+            // Event listeners for buttons
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    prevSlide();
+                }
+            });
+            
+            // Initialize the first slide
+            showSlide(currentSlide);
+        });
+    </script>
+</body>
+</html>
